@@ -73,6 +73,9 @@
     .btn{
       border:0;padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer;background:transparent;
       transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     .btn-primary{background:var(--accent);color:white;box-shadow:0 8px 30px rgba(255,123,101,0.18)}
     .btn-ghost{background:var(--accent-2);color:#4a4a58}
@@ -130,6 +133,18 @@
     .stat h3{margin:0;color:var(--accent);font-size:22px}
     .stat p{margin:6px 0 0;color:var(--muted)}
 
+    /* Trending section */
+    .trending-section {
+      max-width: var(--max-w);
+      margin: 80px auto 40px;
+      padding: 0 20px;
+    }
+    .trending-section h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+
     /* layout panels */
     .page{
       max-width:var(--max-w);
@@ -141,6 +156,53 @@
       animation: fadeInUp 0.5s ease forwards;
     }
     .page.active{display:block}
+
+    /* Modal pages */
+    .modal-page {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      z-index: 1000;
+      overflow-y: auto;
+      display: none;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .modal-page.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .modal-page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .modal-page-content {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 20px 40px;
+    }
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--muted);
+      padding: 8px;
+      border-radius: 8px;
+    }
+    .close-modal:hover {
+      background: var(--hover-purple);
+      color: white;
+    }
 
     .grid{
       display:grid;
@@ -256,8 +318,8 @@
 
       <nav>
         <a id="navHome" class="active" href="#" onclick="navTo('home')">Home</a>
-        <a id="navGallery" href="#" onclick="navTo('gallery')">Gallery</a>
-        <a id="navMy" href="#" onclick="navTo('my')">My Prompts</a>
+        <a id="navGallery" href="#" onclick="openModalPage('gallery')">Gallery</a>
+        <a id="navMy" href="#" onclick="openModalPage('my')">My Prompts</a>
         <a id="navLogin" href="#" onclick="openLogin()">Login</a>
       </nav>
     </header>
@@ -270,8 +332,13 @@
       <div class="subline">Discover, submit, and manage creative AI prompts. Join a community of prompt engineers and creators pushing the boundaries of what's possible.</div>
 
       <div class="actions">
-        <button class="btn-primary btn" onclick="navTo('my'); window.scrollTo({top:document.body.scrollHeight, behavior:'smooth'})">Submit Your Prompt</button>
-        <button class="btn btn-ghost" onclick="navTo('gallery')">Explore Gallery</button>
+        <button class="btn-primary btn" onclick="openModalPage('my')">
+          Submit Your Prompt
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="btn btn-ghost" onclick="openModalPage('gallery')">Explore Gallery</button>
       </div>
 
       <div class="stats">
@@ -291,49 +358,66 @@
     </div>
   </section>
 
-  <!-- Pages -->
-  <div id="pageHome" class="page active">
-    <h3 style="font-family:'Space Grotesk',sans-serif;margin:6px 0 12px">Discover Prompts</h3>
-    <div class="muted" style="margin-bottom:12px">Live feed of recent prompt submissions</div>
-    <div id="feedPreview" class="grid"></div>
+  <!-- Trending Section -->
+  <section class="trending-section">
+    <h3>Trending Prompts</h3>
+    <div class="muted" style="margin-bottom:12px">Recently submitted prompts from our community</div>
+    <div id="trendingGrid" class="grid"></div>
+  </section>
+
+  <!-- Modal Pages -->
+  <div id="modalGallery" class="modal-page">
+    <div class="modal-page-header">
+      <h2 style="font-family:'Space Grotesk',sans-serif;margin:0">Gallery</h2>
+      <button class="close-modal" onclick="closeModalPage('gallery')">×</button>
+    </div>
+    <div class="modal-page-content">
+      <div class="muted" style="margin-bottom:12px">All community prompts with sample images</div>
+      <div id="galleryGrid" class="grid"></div>
+    </div>
   </div>
 
-  <div id="pageGallery" class="page">
-    <h3 style="font-family:'Space Grotesk',sans-serif;margin:6px 0 12px">Gallery</h3>
-    <div class="muted" style="margin-bottom:12px">All community prompts (Gallery view)</div>
-    <div id="galleryGrid" class="grid"></div>
-  </div>
+  <div id="modalMy" class="modal-page">
+    <div class="modal-page-header">
+      <h2 style="font-family:'Space Grotesk',sans-serif;margin:0">My Prompts</h2>
+      <button class="close-modal" onclick="closeModalPage('my')">×</button>
+    </div>
+    <div class="modal-page-content">
+      <div style="display:flex;gap:18px;flex-wrap:wrap">
+        <div style="flex:1;min-width:320px">
+          <div class="panel">
+            <h4 style="font-family:'Space Grotesk',sans-serif;margin:0 0 6px">Submit Prompt</h4>
+            <div class="muted">Enter prompt text and sample image. Both will be uploaded to server and shown in Gallery after submission.</div>
 
-  <div id="pageMy" class="page">
-    <div style="display:flex;gap:18px;flex-wrap:wrap">
-      <div style="flex:1;min-width:320px">
-        <div class="panel">
-          <h4 style="font-family:'Space Grotesk',sans-serif;margin:0 0 6px">Submit Prompt</h4>
-          <div class="muted">Enter prompt text and sample image. Both will be uploaded to server and shown in Gallery after submission.</div>
+            <label>Username *</label>
+            <input id="fusername" type="text" placeholder="Your name" />
 
-          <label>Username *</label>
-          <input id="fusername" type="text" placeholder="Your name" />
+            <label>Prompt Text *</label>
+            <textarea id="ftext" placeholder="Describe the prompt (style, mood, lens, color grading, etc.)"></textarea>
 
-          <label>Prompt Text *</label>
-          <textarea id="ftext" placeholder="Describe the prompt (style, mood, lens, color grading, etc.)"></textarea>
+            <label>Upload sample image</label>
+            <input id="fimage" type="file" accept="image/*" />
+            <div id="fpreview" style="margin-top:10px"></div>
 
-          <label>Upload sample image</label>
-          <input id="fimage" type="file" accept="image/*" />
-          <div id="fpreview" style="margin-top:10px"></div>
-
-          <div style="display:flex;gap:10px;margin-top:12px">
-            <button id="submitBtn" class="btn-primary btn">Submit</button>
-            <button id="clearBtn" class="btn btn-ghost">Clear</button>
+            <div style="display:flex;gap:10px;margin-top:12px">
+              <button id="submitBtn" class="btn-primary btn">
+                Submit
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <button id="clearBtn" class="btn btn-ghost">Clear</button>
+            </div>
+            <div class="muted" style="margin-top:10px">Notes: Images up to 10MB. Allowed: png, jpg, jpeg, webp, gif.</div>
           </div>
-          <div class="muted" style="margin-top:10px">Notes: Images up to 10MB. Allowed: png, jpg, jpeg, webp, gif.</div>
         </div>
-      </div>
 
-      <div style="width:380px;min-width:260px">
-        <div class="panel">
-          <h4 style="margin:0;font-family:'Space Grotesk',sans-serif">My Prompts</h4>
-          <div class="muted" style="margin-top:8px">Prompts you submitted will appear here after submission.</div>
-          <div id="myPromptsList" style="margin-top:12px"></div>
+        <div style="width:380px;min-width:260px">
+          <div class="panel">
+            <h4 style="margin:0;font-family:'Space Grotesk',sans-serif">My Submitted Prompts</h4>
+            <div class="muted" style="margin-top:8px">Prompts you submitted will appear here after submission.</div>
+            <div id="myPromptsList" style="margin-top:12px"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -358,7 +442,7 @@
 
   <footer>
     <div style="max-width:var(--max-w);margin:0 auto;padding:0 20px;text-align:center">
-      <div>© PromptZen — by <a href="https://coderonins.vercel.app" target="_blank">Code Ronins</a></div>
+      <div>© 2025 PromptZen — by <a href="https://coderonins.vercel.app" target="_blank">Code Ronins</a></div>
       <div>Made with ♥</div>
     </div>
   </footer>
@@ -383,12 +467,29 @@ function navTo(page){
 
   // If we switched to gallery, ensure it's loaded
   if(page === 'gallery') loadGallery();
-  if(page === 'home') loadFeedPreview();
+  if(page === 'home') loadTrending();
   if(page === 'my') loadMyPrompts();
   
   // Scroll to top when navigating
   window.scrollTo({top: 0, behavior: 'smooth'});
 }
+
+function openModalPage(page) {
+  document.getElementById('modal' + capitalize(page)).classList.add('active');
+  document.body.style.overflow = 'hidden';
+  
+  if(page === 'gallery') {
+    loadGallery();
+  } else if(page === 'my') {
+    loadMyPrompts();
+  }
+}
+
+function closeModalPage(page) {
+  document.getElementById('modal' + capitalize(page)).classList.remove('active');
+  document.body.style.overflow = 'auto';
+}
+
 function capitalize(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
 
 /* ---------- Modal ---------- */
@@ -494,19 +595,19 @@ async function loadGallery(){
   }, 100);
 }
 
-async function loadFeedPreview(){
-  const preview = document.getElementById('feedPreview');
-  preview.innerHTML = '<div class="muted">Loading…</div>';
+async function loadTrending(){
+  const grid = document.getElementById('trendingGrid');
+  grid.innerHTML = '<div class="muted">Loading…</div>';
   const prompts = await fetchPrompts();
-  if(prompts.length === 0){ preview.innerHTML = '<div class="muted">No prompts yet.</div>'; updateStats(prompts); return; }
-  // show first 6 in preview
+  if(prompts.length === 0){ grid.innerHTML = '<div class="muted">No prompts yet. Be the first to submit one!</div>'; updateStats(prompts); return; }
+  // show first 6 in trending
   const first = prompts.slice(0,6);
-  preview.innerHTML = first.map(p=> makeCardHtml(p)).join('');
+  grid.innerHTML = first.map(p=> makeCardHtml(p)).join('');
   updateStats(prompts);
   
   // Trigger fade-in animation for cards
   setTimeout(() => {
-    const cards = preview.querySelectorAll('.fade-in');
+    const cards = grid.querySelectorAll('.fade-in');
     cards.forEach(card => {
       card.classList.add('visible');
     });
@@ -567,7 +668,7 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
     document.getElementById('fpreview').innerHTML = '';
     // refresh pages
     loadGallery();
-    loadFeedPreview();
+    loadTrending();
     loadMyPrompts();
   }catch(e){
     console.error(e);
@@ -583,7 +684,7 @@ document.getElementById('clearBtn').addEventListener('click', ()=>{
 
 /* ---------- init ---------- */
 (async function init(){
-  await loadFeedPreview();
+  await loadTrending();
   // attach nav home active
   navTo('home');
 })();
