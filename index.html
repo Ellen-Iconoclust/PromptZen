@@ -333,7 +333,7 @@
       transition: transform 0.35s cubic-bezier(.2,.9,.2,1), box-shadow 0.35s;
       position:relative;
       height: fit-content;
-      min-height: 480px;
+      min-height: 520px;
     }
     .card:hover {
       transform: translateY(-8px) scale(1.02);
@@ -388,6 +388,22 @@
       flex-grow: 1;
       overflow-y: auto;
       max-height: 120px;
+    }
+    .card .model-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      padding: 8px 12px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .card .model-info svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
     }
     .card .card-bottom{
       display:flex;
@@ -587,7 +603,7 @@
         padding: 0 15px 30px;
       }
       .card {
-        min-height: 450px;
+        min-height: 500px;
         padding: 14px;
       }
       .card .img {
@@ -624,7 +640,7 @@
         font-size: 12px;
       }
       .card {
-        min-height: 420px;
+        min-height: 480px;
       }
       .card .img {
         height: 160px;
@@ -742,10 +758,29 @@
         <div style="flex:1;min-width:320px">
           <div class="panel">
             <h4 style="font-family:'Space Grotesk',sans-serif;margin:0 0 6px">Submit Prompt</h4>
-            <div class="muted">Enter prompt text and sample image. Both will be uploaded to server and shown in Gallery after submission.</div>
+            <div class="muted">Enter prompt details and sample image. Both will be uploaded to server and shown in Gallery after submission.</div>
 
             <label>Username *</label>
             <input id="fusername" type="text" placeholder="Your name" />
+
+            <label>Prompt Title *</label>
+            <input id="ftitle" type="text" placeholder="Give your prompt a catchy title" />
+
+            <label>Tagline *</label>
+            <input id="ftagline" type="text" placeholder="Short description of your prompt" />
+
+            <label>AI Model *</label>
+            <select id="fmodel">
+              <option value="">Select AI Model</option>
+              <option value="ChatGPT">ChatGPT</option>
+              <option value="Gemini">Gemini</option>
+              <option value="Midjourney">Midjourney</option>
+              <option value="DALL-E">DALL-E</option>
+              <option value="Stable Diffusion">Stable Diffusion</option>
+              <option value="Claude">Claude</option>
+              <option value="Multiple">Multiple Models</option>
+              <option value="Other">Other</option>
+            </select>
 
             <label>Prompt Text *</label>
             <textarea id="ftext" placeholder="Describe the prompt (style, mood, lens, color grading, etc.)"></textarea>
@@ -828,6 +863,7 @@ const initialTrendingPrompts = [
     title: '1/7 Scale Commercialized Figurine',
     tagline: 'Realistic collectible, desk display',
     text: `Create a 1/7 scale commercialized figurine of the characters in the picture, in a realistic style, in a real environment. The figurine is placed on a computer desk. The figurine has a round transparent acrylic base, with no text on the base. The content on the computer screen is a 3D modeling process of this figurine. Next to the computer screen is a toy packaging box, designed in a style reminiscent of high-quality collectible figures, printed with original artwork.`,
+    model: 'ChatGPT, Gemini',
     accepted: true,
     isTrending: true
   },
@@ -839,6 +875,7 @@ const initialTrendingPrompts = [
     title: 'Stark Cinematic Portrait',
     tagline: 'Cinematic Portrait, dark wardrobe',
     text: `Create a vertical portrait shot using the exact same face features, characterized by stark cinematic lighting and intense contrast. Captured in a slightly low, upward-facing angle that dramatized the subject's jawline and neck, the composition evokes quite dominance and sculptural elegance. The background is a deep, saturated crimson red, creating a bold visual clash with the model's luminous skin and dark wardrobe.`,
+    model: 'Gemini',
     accepted: true,
     isTrending: true
   },
@@ -850,6 +887,7 @@ const initialTrendingPrompts = [
     title: 'Aesthetic 90s Style portrait',
     tagline: 'Retro, romantic environment',
     text: `Create a retro vintage grainy but bright image of the reference picture but draped in a perfect red wine color Pinteresty aesthetic retro shirt with white pant and holding a rose flower in hands. It must feel like a 90s movie and romanticising windy environment. The boy is standing against a solid wall deep shadows and contrast drama creating a mysterious and artistic atmosphere where the lighting is warm with a golden tones of evoking a sunset or golden hour glow. The background is minimalist and slightly textured the expression on her face is moody, calm yet happy and introspective.`,
+    model: 'Gemini',
     accepted: true,
     isTrending: true
   }
@@ -865,6 +903,7 @@ const initialGalleryPrompts = [
     title: 'Sci-Fi Cityscape',
     tagline: 'Neon rain, reflective puddles',
     text: `Distant sci-fi skyline at night with neon signs, reflective wet streets, cinematic wide-angle composition, volumetric light, dense atmospheric perspective, photorealistic details.`,
+    model: 'Gemini',
     accepted: true,
     isTrending: false
   },
@@ -876,6 +915,7 @@ const initialGalleryPrompts = [
     title: 'Miniature Food Photography',
     tagline: 'Macro, high detail',
     text: `Tiny plated gourmet dessert on a minimalist kitchen counter, macro photography style, soft natural window light, 85mm lens equivalent, extremely crisp textures.`,
+    model: 'Gemini',
     accepted: true,
     isTrending: false
   },
@@ -887,6 +927,7 @@ const initialGalleryPrompts = [
     title: 'Retro Product Render',
     tagline: '80s toy packaging vibe',
     text: `High-quality 3D product render of a retro-styled toy with glossy plastic material, studio lighting, stylized packaging beside it with retro typography.`,
+    model: 'Gemini',
     accepted: false,
     isTrending: false
   }
@@ -1119,6 +1160,19 @@ function makeCardElement(prompt){
   pbox.textContent = prompt.text || '';
   container.appendChild(pbox);
 
+  // model info
+  const modelInfo = document.createElement('div');
+  modelInfo.className = 'model-info';
+  modelInfo.innerHTML = `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>Works with: ${prompt.model || 'Multiple AI Models'}</span>
+  `;
+  container.appendChild(modelInfo);
+
   // bottom row (copy button)
   const bottom = document.createElement('div');
   bottom.className = 'card-bottom';
@@ -1171,7 +1225,7 @@ async function loadTrending(){
   first.forEach(p=>{
     grid.appendChild(makeCardElement(p));
   });
-  updateStats(prompts);
+  updateStats();
 
   // Trigger fade-in animation for cards
   setTimeout(() => {
@@ -1195,7 +1249,7 @@ async function loadGallery(){
     const cards = grid.querySelectorAll('.fade-in');
     cards.forEach(c=> c.classList.add('visible'));
   },80);
-  updateStats(prompts);
+  updateStats();
 }
 
 /* ---------- My prompts (client) ---------- */
@@ -1212,9 +1266,10 @@ async function loadMyPrompts(){
 }
 
 /* ---------- Update stats ---------- */
-function updateStats(prompts){
-  document.getElementById('statPrompts').textContent = (prompts && prompts.length) || 0;
-  const users = new Set((prompts||[]).map(p=>p.username||'Anonymous'));
+async function updateStats(){
+  const galleryPrompts = await getGalleryPrompts();
+  document.getElementById('statPrompts').textContent = galleryPrompts.length;
+  const users = new Set(galleryPrompts.map(p=>p.username||'Anonymous'));
   document.getElementById('statUsers').textContent = users.size;
 }
 
@@ -1231,14 +1286,23 @@ document.getElementById('fimage').addEventListener('change', (e)=>{
 
 document.getElementById('submitBtn').addEventListener('click', async ()=>{
   const username = document.getElementById('fusername').value.trim();
+  const title = document.getElementById('ftitle').value.trim();
+  const tagline = document.getElementById('ftagline').value.trim();
+  const model = document.getElementById('fmodel').value;
   const text = document.getElementById('ftext').value.trim();
   const file = document.getElementById('fimage').files[0];
-  if(!username || !text) return alert('Please enter username and prompt text');
+  
+  if(!username || !title || !tagline || !model || !text) {
+    return alert('Please fill all required fields: Username, Title, Tagline, Model, and Prompt Text');
+  }
 
   // attempt backend upload if configured, otherwise just add locally to userSubmittedPrompts
   if(BACKEND_BASE){
     const form = new FormData();
     form.append('username', username);
+    form.append('title', title);
+    form.append('tagline', tagline);
+    form.append('model', model);
     form.append('text', text);
     if(file) form.append('image', file);
 
@@ -1251,6 +1315,10 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
       const json = await res.json();
       alert('Submitted! id: ' + json.id);
       // clear
+      document.getElementById('fusername').value = '';
+      document.getElementById('ftitle').value = '';
+      document.getElementById('ftagline').value = '';
+      document.getElementById('fmodel').value = '';
       document.getElementById('ftext').value = '';
       document.getElementById('fimage').value = '';
       document.getElementById('fpreview').innerHTML = '';
@@ -1269,14 +1337,19 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
       username,
       created: new Date().toISOString(),
       image_url: file ? URL.createObjectURL(file) : 'prompt-1-collectible-figurine.jpg',
-      title: text.split('\n')[0].slice(0,60),
-      tagline: 'User submission',
+      title: title,
+      tagline: tagline,
       text,
+      model: model,
       accepted: false,
       isTrending: false // User submissions are NOT trending by default
     };
     userSubmittedPrompts.unshift(newPrompt); // add to front
     // clear
+    document.getElementById('fusername').value = '';
+    document.getElementById('ftitle').value = '';
+    document.getElementById('ftagline').value = '';
+    document.getElementById('fmodel').value = '';
     document.getElementById('ftext').value = '';
     document.getElementById('fimage').value = '';
     document.getElementById('fpreview').innerHTML = '';
@@ -1289,6 +1362,9 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
 });
 document.getElementById('clearBtn').addEventListener('click', ()=>{
   document.getElementById('fusername').value = '';
+  document.getElementById('ftitle').value = '';
+  document.getElementById('ftagline').value = '';
+  document.getElementById('fmodel').value = '';
   document.getElementById('ftext').value = '';
   document.getElementById('fimage').value = '';
   document.getElementById('fpreview').innerHTML = '';
