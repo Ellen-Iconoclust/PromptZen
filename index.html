@@ -818,7 +818,8 @@ const BACKEND_BASE = ''; // empty means same origin; keep if you want to hook a 
 let currentUser = { username:null, role:'user' };
 
 /* ---------- Sample/initial prompts (use these when backend unreachable) ---------- */
-const initialPrompts = [
+// Now we separate trending prompts from gallery prompts
+const initialTrendingPrompts = [
   {
     id: 'zen-1',
     username: 'Ellen',
@@ -827,7 +828,8 @@ const initialPrompts = [
     title: '1/7 Scale Commercialized Figurine',
     tagline: 'Realistic collectible, desk display',
     text: `Create a 1/7 scale commercialized figurine of the characters in the picture, in a realistic style, in a real environment. The figurine is placed on a computer desk. The figurine has a round transparent acrylic base, with no text on the base. The content on the computer screen is a 3D modeling process of this figurine. Next to the computer screen is a toy packaging box, designed in a style reminiscent of high-quality collectible figures, printed with original artwork.`,
-    accepted: true
+    accepted: true,
+    isTrending: true
   },
   {
     id: 'zen-2',
@@ -836,8 +838,9 @@ const initialPrompts = [
     image_url: 'stark-portrait.jpg',
     title: 'Stark Cinematic Portrait',
     tagline: 'Cinematic Portrait, dark wardrobe',
-    text: `Create a vertical portrait shot using the exact same face features, characterized by stark cinematic lighting and intense contrast. Captured in a slightly low, upward-facing angle that dramatized the subject’s jawline and neck, the composition evokes quite dominance and sculptural elegance. The background is a deep, saturated crimson red, creating a bold visual clash with the model’s luminous skin and dark wardrobe.`,
-    accepted: true
+    text: `Create a vertical portrait shot using the exact same face features, characterized by stark cinematic lighting and intense contrast. Captured in a slightly low, upward-facing angle that dramatized the subject's jawline and neck, the composition evokes quite dominance and sculptural elegance. The background is a deep, saturated crimson red, creating a bold visual clash with the model's luminous skin and dark wardrobe.`,
+    accepted: true,
+    isTrending: true
   },
   {
     id: 'zen-3',
@@ -846,9 +849,14 @@ const initialPrompts = [
     image_url: 'gemini-rose.png',
     title: 'Aesthetic 90s Style portrait',
     tagline: 'Retro, romantic environment',
-    text: `Create a retro vintage grainy but bright image of the reference picture but draped in a perfect red wine color Pinteresty aesthetic retro shirt with white pant and holding a rose flower in hands. It must feel like a 90s movie and romanticising windy environment. The boy is standing against a solid wall deep shadows and contrast drama creating a mysterious and artistic atmosphere where the lighting is warm with a golden tones of evoking a sunset or golden hour glow. The background is minimalist and slightly textured the expression on her face is moody, calm yet happy and introspective.`,
-    accepted: true
-  },
+    text: `Create a retro vintage grainy but bright image of the reference picture but draped in a perfect red wine color Pinteresty aesthetic retro shirt with white pant and holding a rose flower in hands. It must feel like a 90s movie and romanticising windy environment. The boy is standing against a solid wall deep shadows and contrast drama creating a mysterious and artistic atmosphere where the lighting is warm with a golden tones of evoking a sunset or golden hour glow. The background is minimalist and slightly textured the expression on her face is moody, calm yet happy and introspective.`,
+    accepted: true,
+    isTrending: true
+  }
+];
+
+const initialGalleryPrompts = [
+  ...initialTrendingPrompts, // Trending prompts also appear in gallery
   {
     id: 'zen-4',
     username: 'PromptMaster',
@@ -857,7 +865,8 @@ const initialPrompts = [
     title: 'Sci-Fi Cityscape',
     tagline: 'Neon rain, reflective puddles',
     text: `Distant sci-fi skyline at night with neon signs, reflective wet streets, cinematic wide-angle composition, volumetric light, dense atmospheric perspective, photorealistic details.`,
-    accepted: true
+    accepted: true,
+    isTrending: false
   },
   {
     id: 'zen-5',
@@ -867,7 +876,8 @@ const initialPrompts = [
     title: 'Miniature Food Photography',
     tagline: 'Macro, high detail',
     text: `Tiny plated gourmet dessert on a minimalist kitchen counter, macro photography style, soft natural window light, 85mm lens equivalent, extremely crisp textures.`,
-    accepted: true
+    accepted: true,
+    isTrending: false
   },
   {
     id: 'zen-6',
@@ -877,9 +887,13 @@ const initialPrompts = [
     title: 'Retro Product Render',
     tagline: '80s toy packaging vibe',
     text: `High-quality 3D product render of a retro-styled toy with glossy plastic material, studio lighting, stylized packaging beside it with retro typography.`,
-    accepted: false
+    accepted: false,
+    isTrending: false
   }
 ];
+
+// Store user-submitted prompts separately
+let userSubmittedPrompts = [];
 
 /* ------------------------------------------------------------------------- */
 /* UX / Nav / Modal / Auth                                                  */
@@ -1024,13 +1038,24 @@ async function fetchPromptsFromBackend(){
 }
 
 /* ---------- Helper to get prompts: backend or initial ---------- */
-async function getPrompts(){
+async function getTrendingPrompts(){
   const backend = await fetchPromptsFromBackend();
   if(Array.isArray(backend) && backend.length) {
+    // Filter trending prompts from backend data
+    return backend.filter(p => p.isTrending === true);
+  }
+  // fallback to initialTrendingPrompts
+  return JSON.parse(JSON.stringify(initialTrendingPrompts));
+}
+
+async function getGalleryPrompts(){
+  const backend = await fetchPromptsFromBackend();
+  if(Array.isArray(backend) && backend.length) {
+    // Get all prompts for gallery
     return backend;
   }
-  // fallback to initialPrompts (we clone to avoid accidental mutation)
-  return JSON.parse(JSON.stringify(initialPrompts));
+  // fallback to initialGalleryPrompts + userSubmittedPrompts
+  return [...JSON.parse(JSON.stringify(initialGalleryPrompts)), ...userSubmittedPrompts];
 }
 
 /* ---------- Render functions ---------- */
@@ -1047,6 +1072,18 @@ function makeCardElement(prompt){
   const container = document.createElement('div');
   container.className = 'card fade-in';
   container.dataset.id = prompt.id;
+
+  // Add trending badge if applicable
+  if (prompt.isTrending) {
+    const badge = document.createElement('div');
+    badge.className = 'badge';
+    badge.textContent = 'Trending';
+    badge.style.position = 'absolute';
+    badge.style.top = '10px';
+    badge.style.right = '10px';
+    badge.style.zIndex = '1';
+    container.appendChild(badge);
+  }
 
   // image container
   const imgWrap = document.createElement('div');
@@ -1127,7 +1164,7 @@ function makeCardElement(prompt){
 async function loadTrending(){
   const grid = document.getElementById('trendingGrid');
   grid.innerHTML = '<div class="muted">Loading…</div>';
-  const prompts = await getPrompts();
+  const prompts = await getTrendingPrompts();
   grid.innerHTML = '';
   // show first 6
   const first = prompts.slice(0,6);
@@ -1147,7 +1184,7 @@ async function loadTrending(){
 async function loadGallery(){
   const grid = document.getElementById('galleryGrid');
   grid.innerHTML = '<div class="muted">Loading…</div>';
-  const prompts = await getPrompts();
+  const prompts = await getGalleryPrompts();
   grid.innerHTML = '';
   prompts.forEach(p=>{
     const el = makeCardElement(p);
@@ -1164,7 +1201,7 @@ async function loadGallery(){
 /* ---------- My prompts (client) ---------- */
 async function loadMyPrompts(){
   const list = document.getElementById('myPromptsList');
-  const prompts = await getPrompts();
+  const prompts = await getGalleryPrompts();
   const me = (currentUser && currentUser.username) ? currentUser.username : null;
   const mine = me ? prompts.filter(p=> p.username === me) : [];
   if(!me) { list.innerHTML = '<div class="muted">Login to see your prompts here.</div>'; return; }
@@ -1198,7 +1235,7 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
   const file = document.getElementById('fimage').files[0];
   if(!username || !text) return alert('Please enter username and prompt text');
 
-  // attempt backend upload if configured, otherwise just add locally to initialPrompts
+  // attempt backend upload if configured, otherwise just add locally to userSubmittedPrompts
   if(BACKEND_BASE){
     const form = new FormData();
     form.append('username', username);
@@ -1226,7 +1263,7 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
       alert('upload error');
     }
   } else {
-    // add locally to initialPrompts and refresh
+    // add locally to userSubmittedPrompts and refresh
     const newPrompt = {
       id: 'local-' + Date.now(),
       username,
@@ -1235,9 +1272,10 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
       title: text.split('\n')[0].slice(0,60),
       tagline: 'User submission',
       text,
-      accepted: false
+      accepted: false,
+      isTrending: false // User submissions are NOT trending by default
     };
-    initialPrompts.unshift(newPrompt); // add to front
+    userSubmittedPrompts.unshift(newPrompt); // add to front
     // clear
     document.getElementById('ftext').value = '';
     document.getElementById('fimage').value = '';
