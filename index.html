@@ -188,7 +188,7 @@
       animation: fadeInUp 1s ease forwards;
     }
     .hero h2{
-      margin:0;font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(2.2rem, 7vw, 4.2rem);color:#111;
+      margin:0;font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(2.5rem, 8vw, 5rem);color:#111;
       line-height:1.02;
       word-wrap: break-word;
       overflow-wrap: break-word;
@@ -412,11 +412,12 @@
       justify-content: center;
       font-size: 15px;
       box-shadow: 0 4px 15px rgba(255,123,101,0.2);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     }
     .copy-btn:hover {
-      background: var(--accent-darker);
+      background: var(--hover-purple);
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(255,123,101,0.3);
+      box-shadow: 0 6px 20px rgba(164,107,245,0.3);
     }
     .card:hover h4 { 
       color:var(--accent-darker); 
@@ -715,7 +716,7 @@
   <!-- Trending Section -->
   <section class="trending-section">
     <h3 id="trendingTitle">Trending Prompts</h3>
-    <div id="trendingSub" class="subtag">Explore verified AI prompts with stunning visuals — copy any prompt instantly</div>
+    <div id="trendingSub" class="subtag">Recently submitted prompts from our community</div>
     <div id="trendingGrid" class="grid"></div>
   </section>
 
