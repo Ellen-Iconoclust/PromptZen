@@ -20,6 +20,7 @@
       --radius:14px;
       --shadow: 0 10px 30px rgba(20,20,30,0.06);
       --max-w:1200px;
+      --accent-darker: #ff6040;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -32,14 +33,14 @@
       color:#222;
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
-      padding-bottom:60px;
+      padding-bottom:80px;
     }
 
     /* top glass nav container (contained, not browser) */
     .topbar-wrap{
       position:sticky; top:0; z-index:999;
       backdrop-filter: blur(6px);
-      background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.6));
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.7));
       border-bottom:1px solid rgba(0,0,0,0.03);
       box-shadow: 0 6px 18px rgba(10,10,12,0.03);
     }
@@ -145,18 +146,37 @@
       align-items: center;
       gap: 8px;
     }
-    .btn-primary{background:var(--accent);color:white;box-shadow:0 8px 30px rgba(255,123,101,0.18)}
-    .btn-ghost{background:var(--accent-2);color:#4a4a58}
+    .btn-primary{
+      background:var(--accent);
+      color:white;
+      box-shadow:0 8px 30px rgba(255,123,101,0.18);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--hover-purple) 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 35px rgba(255,123,101,0.25);
+    }
+    .btn-ghost{
+      background:var(--accent-2);
+      color:#4a4a58;
+    }
+    .btn-ghost:hover {
+      background: var(--hover-purple);
+      color: white;
+      transform: translateY(-2px);
+    }
 
     /* content */
     .hero{
-      height: 100vh;
+      height: 85vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 0 20px;
+      padding: 60px 20px 40px;
       position: relative;
       overflow: hidden;
     }
@@ -168,22 +188,22 @@
       animation: fadeInUp 1s ease forwards;
     }
     .hero h2{
-      margin:0;font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(2.5rem, 8vw, 6rem);color:#111;
+      margin:0;font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(2.2rem, 7vw, 4.2rem);color:#111;
       line-height:1.02;
       word-wrap: break-word;
       overflow-wrap: break-word;
     }
     .hero .subline{
-      font-size:clamp(1rem, 3vw, 1.8rem);
+      font-size:clamp(1rem, 3vw, 1.3rem);
       color:var(--muted);
-      margin-top:24px;
+      margin-top:18px;
       opacity: 0;
       transform: translateY(20px);
       animation: fadeInUp 1s ease 0.3s forwards;
       line-height: 1.4;
     }
     .hero .actions{
-      margin-top:32px;
+      margin-top:24px;
       display:flex;
       gap:12px;
       justify-content:center;
@@ -196,7 +216,7 @@
       display:flex;
       gap:20px;
       justify-content:center;
-      margin-top:32px;
+      margin-top:28px;
       flex-wrap: wrap;
       opacity: 0;
       transform: translateY(20px);
@@ -204,32 +224,40 @@
     }
     .stat{
       background:var(--card);
-      padding:18px 24px;
+      padding:16px 22px;
       border-radius:12px;
       box-shadow:var(--shadow);
       min-width: 120px;
       flex: 1;
       max-width: 180px;
     }
-    .stat h3{margin:0;color:var(--accent);font-size:22px}
+    .stat h3{margin:0;color:var(--accent);font-size:20px}
     .stat p{margin:6px 0 0;color:var(--muted);font-size:14px}
 
     /* Trending section */
     .trending-section {
       max-width: var(--max-w);
-      margin: 80px auto 40px;
+      margin: 100px auto 24px;
       padding: 0 20px;
+      text-align: center;
     }
     .trending-section h3 {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(1.5rem, 4vw, 2rem);
-      margin-bottom: 12px;
+      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      margin-bottom: 6px;
+      line-height:1;
+    }
+    .trending-section .subtag {
+      color:var(--muted);
+      margin-bottom:28px;
+      display:block;
+      font-size:clamp(0.95rem,2.5vw,1.1rem);
     }
 
     /* layout panels */
     .page{
       max-width:var(--max-w);
-      margin:26px auto;
+      margin:6px auto;
       padding:0 20px;
       display:none;
       opacity: 0;
@@ -289,61 +317,173 @@
       display:grid;
       grid-template-columns: repeat(3,1fr);
       gap:18px;
+      align-items: start;
     }
     @media (max-width:1100px){ .grid{grid-template-columns:repeat(2,1fr)} }
     @media (max-width:720px){ .grid{grid-template-columns:1fr} }
 
     .card{
-      background:var(--card);border-radius:14px;padding:12px;box-shadow:var(--shadow);
-      overflow:hidden;display:flex;flex-direction:column;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background:var(--card);
+      border-radius:14px;
+      padding:16px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      transition: transform 0.35s cubic-bezier(.2,.9,.2,1), box-shadow 0.35s;
+      position:relative;
+      height: fit-content;
+      min-height: 480px;
     }
     .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 40px rgba(20,20,30,0.1);
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 25px 60px rgba(20,20,30,0.15);
     }
-    .card .img{width:100%;height:170px;background:#eee;border-radius:10px;overflow:hidden}
-    .card .img img{width:100%;height:100%;object-fit:cover;display:block}
+    .card .img{
+      width:100%;
+      height:200px;
+      border-radius:10px;
+      overflow:hidden;
+      position:relative;
+      background:#eee;
+      flex-shrink: 0;
+    }
+    .card .img img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      transition: transform 0.6s cubic-bezier(.2,.9,.2,1);
+    }
+    .card:hover .img img{
+      transform: scale(1.08);
+    }
     .card h4{
-      margin:12px 0 4px;
+      margin:16px 0 6px;
       font-family:'Space Grotesk',sans-serif;
-      color:#ff6d57;
-      font-size: clamp(14px, 3vw, 16px);
+      color:#333;
+      font-size: clamp(16px, 2.6vw, 18px);
       line-height: 1.3;
+      transition: color .22s;
+      text-align: center;
+      font-weight: 700;
     }
-    .card p{color:var(--muted);margin:0 0 12px; font-size: 14px;}
-
+    .card .tagline { 
+      color:var(--muted); 
+      font-size:14px; 
+      margin-bottom:12px; 
+      text-align: center;
+    }
     .card .prompt-box{
       background:#fff6ef;
-      padding:10px;
+      padding:12px;
       border-radius:10px;
       border:1px solid #f2e0d6;
       color:#4b4b5b;
-      font-size: 14px;
-      line-height: 1.4;
-      word-wrap: break-word;
+      font-size:14px;
+      line-height:1.5;
+      margin-top:8px; 
+      white-space:pre-wrap; 
+      word-wrap:break-word;
+      flex-grow: 1;
+      overflow-y: auto;
+      max-height: 120px;
     }
-    .card .actions{display:flex;gap:8px;margin-top:10px}
+    .card .card-bottom{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin-top:16px;
+      gap:8px;
+    }
+    .copy-btn{
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:600;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      transition: all 0.25s;
+      width: 100%;
+      justify-content: center;
+      font-size: 15px;
+      box-shadow: 0 4px 15px rgba(255,123,101,0.2);
+    }
+    .copy-btn:hover {
+      background: var(--accent-darker);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255,123,101,0.3);
+    }
+    .card:hover h4 { 
+      color:var(--accent-darker); 
+    }
+
+    /* tag badge inside card if needed */
+    .badge{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#fff3f1;
+      color:var(--accent);
+      font-weight:700;
+      font-size:12px
+    }
 
     /* form panel */
     .panel{
-      background:var(--card);padding:18px;border-radius:14px;box-shadow:var(--shadow);
+      background:var(--card);
+      padding:18px;
+      border-radius:14px;
+      box-shadow:var(--shadow);
       margin-top:6px;
     }
     input[type="text"], textarea, input[type="file"], select{
-      width:100%;padding:10px;border-radius:10px;border:1px solid #eee;background:transparent;font-size:14px;margin-top:8px;
+      width:100%;
+      padding:10px;
+      border-radius:10px;
+      border:1px solid #eee;
+      background:transparent;
+      font-size:14px;
+      margin-top:8px;
     }
-    textarea{min-height:140px;resize:vertical}
+    textarea{
+      min-height:140px;
+      resize:vertical
+    }
 
-    .center{display:flex;justify-content:center}
+    .center{
+      display:flex;
+      justify-content:center
+    }
 
     /* login modal */
     .modal-backdrop{
-      position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(10,10,12,0.4);
-      display:none;align-items:center;justify-content:center;z-index:2000;
+      position:fixed;
+      left:0;
+      top:0;
+      width:100%;
+      height:100%;
+      background:rgba(10,10,12,0.4);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:2000;
     }
-    .modal{background:var(--card);padding:20px;border-radius:14px;min-width:320px;box-shadow:var(--shadow); max-width: 90vw;}
-    .modal.show{display:flex}
+    .modal{
+      background:var(--card);
+      padding:20px;
+      border-radius:14px;
+      min-width:320px;
+      box-shadow:var(--shadow); 
+      max-width: 90vw;
+    }
+    .modal.show{
+      display:flex
+    }
 
     footer{
       max-width:var(--max-w);
@@ -363,13 +503,31 @@
 
     /* small helpers */
     .muted{color:var(--muted)}
-    .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#fff3f1;color:var(--accent);font-weight:700;font-size:12px}
+    .small { font-size:13px; color:var(--muted); }
 
-    /* hover purple effect for all buttons/links */
-    a:hover, button:hover {
-      transition: background .12s, color .12s;
-      background: var(--hover-purple) !important;
-      color: #fff !important;
+    /* toast */
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      background: rgba(34,34,34,0.95);
+      color: white;
+      padding: 10px 14px;
+      border-radius: 12px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      box-shadow: 0 10px 30px rgba(10,10,15,0.25);
+      z-index: 9999;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .18s, transform .24s;
+      pointer-events: none;
+    }
+    .toast.show { 
+      opacity: 1; 
+      transform: translateY(0); 
+      pointer-events: auto; 
     }
 
     /* Animations */
@@ -427,6 +585,17 @@
       .modal-page-content {
         padding: 0 15px 30px;
       }
+      .card {
+        min-height: 450px;
+        padding: 14px;
+      }
+      .card .img {
+        height: 180px;
+      }
+      .hero {
+        height: 80vh;
+        padding: 40px 20px 20px;
+      }
     }
 
     @media (max-width: 480px) {
@@ -438,7 +607,7 @@
         height: 36px;
       }
       .hero h2 {
-        font-size: clamp(2rem, 10vw, 3rem);
+        font-size: clamp(1.6rem, 10vw, 2.6rem);
       }
       .hero .subline {
         font-size: 1rem;
@@ -452,6 +621,19 @@
       }
       .stat p {
         font-size: 12px;
+      }
+      .card {
+        min-height: 420px;
+      }
+      .card .img {
+        height: 160px;
+      }
+      .copy-btn {
+        padding: 10px 16px;
+        font-size: 14px;
+      }
+      .trending-section .subtag {
+        margin-bottom: 20px;
       }
     }
   </style>
@@ -532,8 +714,8 @@
 
   <!-- Trending Section -->
   <section class="trending-section">
-    <h3>Trending Prompts</h3>
-    <div class="muted" style="margin-bottom:12px">Recently submitted prompts from our community</div>
+    <h3 id="trendingTitle">Trending Prompts</h3>
+    <div id="trendingSub" class="subtag">Recently submitted prompts from our community</div>
     <div id="trendingGrid" class="grid"></div>
   </section>
 
@@ -612,6 +794,14 @@
     </div>
   </div>
 
+  <!-- toast for copy -->
+  <div id="toast" class="toast" aria-live="polite" role="status" style="display:flex;align-items:center;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex:0 0 18px">
+      <path d="M20 6L9 17l-5-5" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div id="toastText">Copied to clipboard</div>
+  </div>
+
   <footer>
     <div style="max-width:var(--max-w);margin:0 auto;padding:0 20px;text-align:center">
       <div>© 2025 PromptZen — by <a href="https://coderonins.vercel.app" target="_blank">Code Ronins</a></div>
@@ -621,88 +811,152 @@
 
 <script>
 /* ---------- CONFIG ---------- */
-const BACKEND_BASE = ''; // empty means same origin
+const BACKEND_BASE = ''; // empty means same origin; keep if you want to hook a real backend
 /* ---------------------------- */
 
 let currentUser = { username:null, role:'user' };
 
-/* ---------- Mobile Navigation ---------- */
+/* ---------- Sample/initial prompts (use these when backend unreachable) ---------- */
+const initialPrompts = [
+  {
+    id: 'zen-1',
+    username: 'Ellen',
+    created: new Date().toISOString(),
+    image_url: 'prompt-1-collectible-figurine.jpg',
+    title: '1/7 Scale Commercialized Figurine',
+    tagline: 'Realistic collectible, desk display',
+    text: `Create a 1/7 scale commercialized figurine of the characters in the picture, in a realistic style, in a real environment. The figurine is placed on a computer desk. The figurine has a round transparent acrylic base, with no text on the base. The content on the computer screen is a 3D modeling process of this figurine. Next to the computer screen is a toy packaging box, designed in a style reminiscent of high-quality collectible figures, printed with original artwork.`,
+    accepted: true
+  },
+  {
+    id: 'zen-2',
+    username: 'Madelyn',
+    created: new Date(Date.now()-1000*60*60*8).toISOString(),
+    image_url: 'prompt-2-moody-portrait.jpg',
+    title: 'Moody Film Portrait',
+    tagline: 'Cinematic, low-key lighting',
+    text: `Portrait of a woman in moody film lighting, 50mm lens, shallow depth of field, grain film texture, warm highlights on the cheekbones, cinematic color grading reminiscent of modern indie films.`,
+    accepted: true
+  },
+  {
+    id: 'zen-3',
+    username: 'CodeRonins',
+    created: new Date(Date.now()-1000*60*60*24).toISOString(),
+    image_url: 'prompt-3-ghibli-garden.jpg',
+    title: 'Ghibli Garden Scene',
+    tagline: 'Lush, hand-painted vibe',
+    text: `A sunlit garden with oversized flowers and winding paths, in the style of Studio Ghibli concept art: painterly, soft edges, detailed foliage, whimsical creatures peeking through leaves.`,
+    accepted: false
+  },
+  {
+    id: 'zen-4',
+    username: 'PromptMaster',
+    created: new Date(Date.now()-1000*60*60*40).toISOString(),
+    image_url: 'prompt-4-sci-fi-city.jpg',
+    title: 'Sci-Fi Cityscape',
+    tagline: 'Neon rain, reflective puddles',
+    text: `Distant sci-fi skyline at night with neon signs, reflective wet streets, cinematic wide-angle composition, volumetric light, dense atmospheric perspective, photorealistic details.`,
+    accepted: false
+  },
+  {
+    id: 'zen-5',
+    username: 'Ellne',
+    created: new Date(Date.now()-1000*60*60*60).toISOString(),
+    image_url: 'prompt-5-miniature-food.jpg',
+    title: 'Miniature Food Photography',
+    tagline: 'Macro, high detail',
+    text: `Tiny plated gourmet dessert on a minimalist kitchen counter, macro photography style, soft natural window light, 85mm lens equivalent, extremely crisp textures.`,
+    accepted: true
+  },
+  {
+    id: 'zen-6',
+    username: 'Guest101',
+    created: new Date(Date.now()-1000*60*60*72).toISOString(),
+    image_url: 'prompt-6-retro-product.jpg',
+    title: 'Retro Product Render',
+    tagline: '80s toy packaging vibe',
+    text: `High-quality 3D product render of a retro-styled toy with glossy plastic material, studio lighting, stylized packaging beside it with retro typography.`,
+    accepted: false
+  }
+];
+
+/* ------------------------------------------------------------------------- */
+/* UX / Nav / Modal / Auth                                                  */
+/* ------------------------------------------------------------------------- */
 function toggleMobileNav() {
   const mobileNav = document.getElementById('mobileNav');
   mobileNav.classList.toggle('active');
   document.body.style.overflow = mobileNav.classList.contains('active') ? 'hidden' : 'auto';
 }
-
 function navToMobile(page) {
   navTo(page);
   toggleMobileNav();
 }
-
 function openModalPageMobile(page) {
   openModalPage(page);
   toggleMobileNav();
 }
-
 function openLoginMobile() {
   openLogin();
   toggleMobileNav();
 }
 
-/* ---------- Navigation ---------- */
 function navTo(page){
   const pages = ['home','gallery','my'];
   pages.forEach(p=>{
-    document.getElementById('page'+capitalize(p)).classList.remove('active');
-    document.getElementById('nav'+capitalize(p)).classList.remove('active');
-    document.getElementById('mobileNav'+capitalize(p)).classList.remove('active');
+    const pageEl = document.getElementById('page'+capitalize(p));
+    if(pageEl) pageEl.classList.remove('active');
+    const nav = document.getElementById('nav'+capitalize(p));
+    if(nav) nav.classList.remove('active');
+    const mnav = document.getElementById('mobileNav'+capitalize(p));
+    if(mnav) mnav.classList.remove('active');
   });
-  document.getElementById('page'+capitalize(page)).classList.add('active');
+  // home doesn't have a "pageHome" in current markup, but keep for extensibility
   const navId = (page === 'home') ? 'navHome' : (page === 'gallery' ? 'navGallery' : 'navMy');
-  document.getElementById(navId).classList.add('active');
-  document.getElementById('mobileNav'+capitalize(page)).classList.add('active');
+  const navItem = document.getElementById(navId);
+  if(navItem) navItem.classList.add('active');
+  const mobileItem = document.getElementById('mobileNav'+capitalize(page));
+  if(mobileItem) mobileItem.classList.add('active');
 
-  // If we switched to gallery, ensure it's loaded
+  // If switching to gallery/home/my
   if(page === 'gallery') loadGallery();
   if(page === 'home') loadTrending();
   if(page === 'my') loadMyPrompts();
-  
-  // Scroll to top when navigating
+
   window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
 function openModalPage(page) {
-  document.getElementById('modal' + capitalize(page)).classList.add('active');
+  const el = document.getElementById('modal' + capitalize(page));
+  if(!el) return;
+  el.classList.add('active');
   document.body.style.overflow = 'hidden';
-  
-  if(page === 'gallery') {
-    loadGallery();
-  } else if(page === 'my') {
-    loadMyPrompts();
-  }
+  if(page === 'gallery') loadGallery();
+  else if(page === 'my') loadMyPrompts();
 }
-
 function closeModalPage(page) {
-  document.getElementById('modal' + capitalize(page)).classList.remove('active');
+  const el = document.getElementById('modal' + capitalize(page));
+  if(!el) return;
+  el.classList.remove('active');
   document.body.style.overflow = 'auto';
 }
 
 function capitalize(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
 
-/* ---------- Modal ---------- */
 function openLogin(){ document.getElementById('modal').style.display='flex'; }
 function closeLogin(){ document.getElementById('modal').style.display='none'; }
 async function doLogin(){
   const u = document.getElementById('loginUser').value.trim();
   const p = document.getElementById('loginPass').value;
   if(!u || !p) return alert('Please enter username and password');
-  
+
   try {
     const res = await fetch(BACKEND_BASE + '/api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: u, password: p })
     });
-    
+
     if(res.ok) {
       const data = await res.json();
       currentUser = { username: data.username, role: data.role };
@@ -715,15 +969,14 @@ async function doLogin(){
     }
   } catch(e) {
     console.error(e);
-    alert('Login error. Please try again.');
+    alert('Login error. (No backend reachable)');
   }
 }
 
-/* ---------- Auth UI ---------- */
 function updateAuthUI(){
   const navLogin = document.getElementById('navLogin');
   const mobileNavLogin = document.getElementById('mobileNavLogin');
-  
+
   if(currentUser && currentUser.role === 'admin'){
     navLogin.textContent = 'Logout (admin)';
     navLogin.onclick = ()=> { if(confirm('Logout?')) { logout(); } };
@@ -756,83 +1009,174 @@ function logout(){
   updateAuthUI();
 })();
 
-/* ---------- Fetch prompts from backend ---------- */
-async function fetchPrompts(){
+/* ---------- Backend fetch fallback ---------- */
+async function fetchPromptsFromBackend(){
+  if(!BACKEND_BASE) return null;
   try{
     const res = await fetch(BACKEND_BASE + '/api/prompts');
     if(!res.ok) throw new Error('fetch prompts failed');
     return await res.json();
   }catch(e){
-    console.warn('backend fetch failed, returning empty', e);
-    return [];
+    console.warn('backend fetch failed, will use initial prompts', e);
+    return null;
   }
 }
 
+/* ---------- Helper to get prompts: backend or initial ---------- */
+async function getPrompts(){
+  const backend = await fetchPromptsFromBackend();
+  if(Array.isArray(backend) && backend.length) {
+    return backend;
+  }
+  // fallback to initialPrompts (we clone to avoid accidental mutation)
+  return JSON.parse(JSON.stringify(initialPrompts));
+}
+
 /* ---------- Render functions ---------- */
-function makeCardHtml(prompt){
-  const imgHtml = prompt.image_url ? `<div class="img"><img src="${prompt.image_url}" alt="prompt image"></div>` : `<div class="img" style="display:flex;align-items:center;justify-content:center;color:var(--muted)">No image</div>`;
-  const acceptedBadge = prompt.accepted ? `<div class="badge" style="margin-top:8px">Accepted</div>` : '';
-  return `<div class="card fade-in">
-    ${imgHtml}
-    <h4>✦ ${escapeHtml(prompt.text.slice(0,70))}</h4>
-    <p class="muted">By ${escapeHtml(prompt.username)} • ${new Date(prompt.created).toLocaleString()}</p>
-    <div class="prompt-box">${escapeHtml(prompt.text)}</div>
-    <div class="actions">${acceptedBadge}</div>
-  </div>`;
+function formatDate(iso){
+  try {
+    return new Date(iso).toLocaleString();
+  } catch(e) {
+    return iso;
+  }
 }
 function escapeHtml(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-async function loadGallery(){
-  const grid = document.getElementById('galleryGrid');
-  grid.innerHTML = '<div class="muted">Loading…</div>';
-  const prompts = await fetchPrompts();
-  if(prompts.length === 0){ grid.innerHTML = '<div class="muted">No prompts yet.</div>'; return; }
-  grid.innerHTML = prompts.map(p=> makeCardHtml(p)).join('');
-  updateStats(prompts);
-  
-  // Trigger fade-in animation for cards
-  setTimeout(() => {
-    const cards = grid.querySelectorAll('.fade-in');
-    cards.forEach(card => {
-      card.classList.add('visible');
-    });
-  }, 100);
+function makeCardElement(prompt){
+  const container = document.createElement('div');
+  container.className = 'card fade-in';
+  container.dataset.id = prompt.id;
+
+  // image container
+  const imgWrap = document.createElement('div');
+  imgWrap.className = 'img';
+  if(prompt.image_url){
+    const img = document.createElement('img');
+    img.src = prompt.image_url;
+    img.alt = prompt.title || 'prompt image';
+    imgWrap.appendChild(img);
+  } else {
+    imgWrap.textContent = 'No image';
+    imgWrap.style.display = 'flex';
+    imgWrap.style.alignItems = 'center';
+    imgWrap.style.justifyContent = 'center';
+    imgWrap.style.color = 'var(--muted)';
+  }
+  container.appendChild(imgWrap);
+
+  // title
+  const h = document.createElement('h4');
+  h.innerHTML = `<span>${escapeHtml(prompt.title || prompt.text.slice(0,40))}</span>`;
+  container.appendChild(h);
+
+  // tagline
+  const tag = document.createElement('div');
+  tag.className = 'tagline';
+  tag.textContent = prompt.tagline || `By ${prompt.username || 'Anonymous'} • ${formatDate(prompt.created)}`;
+  container.appendChild(tag);
+
+  // prompt box
+  const pbox = document.createElement('div');
+  pbox.className = 'prompt-box';
+  pbox.textContent = prompt.text || '';
+  container.appendChild(pbox);
+
+  // bottom row (copy button)
+  const bottom = document.createElement('div');
+  bottom.className = 'card-bottom';
+
+  const copyBtn = document.createElement('button');
+  copyBtn.className = 'copy-btn';
+  copyBtn.title = 'Copy prompt text';
+  copyBtn.innerHTML = `
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9 12H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Copy the Prompt
+  `;
+  bottom.appendChild(copyBtn);
+
+  copyBtn.addEventListener('click', async ()=>{
+    try {
+      await navigator.clipboard.writeText(prompt.text || '');
+      showToast('Prompt copied to clipboard');
+      // visual feedback
+      const originalHTML = copyBtn.innerHTML;
+      copyBtn.innerHTML = `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Copied!
+      `;
+      setTimeout(()=> {
+        copyBtn.innerHTML = originalHTML;
+      }, 2000);
+    } catch(e){
+      alert('Copy failed — your browser blocked clipboard access.');
+    }
+  });
+
+  container.appendChild(bottom);
+
+  return container;
 }
 
+/* ---------- Load Trending ---------- */
 async function loadTrending(){
   const grid = document.getElementById('trendingGrid');
   grid.innerHTML = '<div class="muted">Loading…</div>';
-  const prompts = await fetchPrompts();
-  if(prompts.length === 0){ grid.innerHTML = '<div class="muted">No prompts yet. Be the first to submit one!</div>'; updateStats(prompts); return; }
-  // show first 6 in trending
+  const prompts = await getPrompts();
+  grid.innerHTML = '';
+  // show first 6
   const first = prompts.slice(0,6);
-  grid.innerHTML = first.map(p=> makeCardHtml(p)).join('');
+  first.forEach(p=>{
+    grid.appendChild(makeCardElement(p));
+  });
   updateStats(prompts);
-  
+
   // Trigger fade-in animation for cards
   setTimeout(() => {
     const cards = grid.querySelectorAll('.fade-in');
-    cards.forEach(card => {
-      card.classList.add('visible');
-    });
-  }, 100);
+    cards.forEach(card => { card.classList.add('visible'); });
+  }, 80);
+}
+
+/* ---------- Load Gallery (same dataset) ---------- */
+async function loadGallery(){
+  const grid = document.getElementById('galleryGrid');
+  grid.innerHTML = '<div class="muted">Loading…</div>';
+  const prompts = await getPrompts();
+  grid.innerHTML = '';
+  prompts.forEach(p=>{
+    const el = makeCardElement(p);
+    grid.appendChild(el);
+  });
+  // fade in
+  setTimeout(()=> {
+    const cards = grid.querySelectorAll('.fade-in');
+    cards.forEach(c=> c.classList.add('visible'));
+  },80);
+  updateStats(prompts);
 }
 
 /* ---------- My prompts (client) ---------- */
 async function loadMyPrompts(){
   const list = document.getElementById('myPromptsList');
-  const prompts = await fetchPrompts();
+  const prompts = await getPrompts();
   const me = (currentUser && currentUser.username) ? currentUser.username : null;
   const mine = me ? prompts.filter(p=> p.username === me) : [];
   if(!me) { list.innerHTML = '<div class="muted">Login to see your prompts here.</div>'; return; }
   if(mine.length === 0) list.innerHTML = '<div class="muted">You have no prompts yet.</div>';
-  else list.innerHTML = mine.map(p=> `<div style="margin-bottom:10px;padding:8px;border-radius:10px;background:#fff7f2">${escapeHtml(p.text.slice(0,140))} <div class="muted" style="font-size:12px">${new Date(p.created).toLocaleString()}</div></div>`).join('');
+  else {
+    list.innerHTML = mine.map(p=> `<div style="margin-bottom:10px;padding:8px;border-radius:10px;background:#fff7f2">${escapeHtml(p.title || p.text.slice(0,140))} <div class="muted" style="font-size:12px">${formatDate(p.created)}</div></div>`).join('');
+  }
 }
 
 /* ---------- Update stats ---------- */
 function updateStats(prompts){
-  document.getElementById('statPrompts').textContent = prompts.length;
-  const users = new Set(prompts.map(p=>p.username||'Anonymous'));
+  document.getElementById('statPrompts').textContent = (prompts && prompts.length) || 0;
+  const users = new Set((prompts||[]).map(p=>p.username||'Anonymous'));
   document.getElementById('statUsers').textContent = users.size;
 }
 
@@ -853,19 +1197,46 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
   const file = document.getElementById('fimage').files[0];
   if(!username || !text) return alert('Please enter username and prompt text');
 
-  const form = new FormData();
-  form.append('username', username);
-  form.append('text', text);
-  if(file) form.append('image', file);
+  // attempt backend upload if configured, otherwise just add locally to initialPrompts
+  if(BACKEND_BASE){
+    const form = new FormData();
+    form.append('username', username);
+    form.append('text', text);
+    if(file) form.append('image', file);
 
-  try{
-    const res = await fetch(BACKEND_BASE + '/api/prompts', { method:'POST', body: form });
-    if(!res.ok) {
-      const j = await res.json().catch(()=>({error:'unknown'}));
-      return alert('Upload failed: ' + (j.error || res.status));
+    try{
+      const res = await fetch(BACKEND_BASE + '/api/prompts', { method:'POST', body: form });
+      if(!res.ok) {
+        const j = await res.json().catch(()=>({error:'unknown'}));
+        return alert('Upload failed: ' + (j.error || res.status));
+      }
+      const json = await res.json();
+      alert('Submitted! id: ' + json.id);
+      // clear
+      document.getElementById('ftext').value = '';
+      document.getElementById('fimage').value = '';
+      document.getElementById('fpreview').innerHTML = '';
+      // refresh pages
+      loadGallery();
+      loadTrending();
+      loadMyPrompts();
+    }catch(e){
+      console.error(e);
+      alert('upload error');
     }
-    const json = await res.json();
-    alert('Submitted! id: ' + json.id);
+  } else {
+    // add locally to initialPrompts and refresh
+    const newPrompt = {
+      id: 'local-' + Date.now(),
+      username,
+      created: new Date().toISOString(),
+      image_url: file ? URL.createObjectURL(file) : 'prompt-1-collectible-figurine.jpg',
+      title: text.split('\n')[0].slice(0,60),
+      tagline: 'User submission',
+      text,
+      accepted: false
+    };
+    initialPrompts.unshift(newPrompt); // add to front
     // clear
     document.getElementById('ftext').value = '';
     document.getElementById('fimage').value = '';
@@ -874,9 +1245,7 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
     loadGallery();
     loadTrending();
     loadMyPrompts();
-  }catch(e){
-    console.error(e);
-    alert('upload error');
+    alert('Submitted locally (no backend configured).');
   }
 });
 document.getElementById('clearBtn').addEventListener('click', ()=>{
@@ -885,6 +1254,23 @@ document.getElementById('clearBtn').addEventListener('click', ()=>{
   document.getElementById('fimage').value = '';
   document.getElementById('fpreview').innerHTML = '';
 });
+
+/* ---------- Toast (copy success) ---------- */
+let toastTimer = null;
+function showToast(msg){
+  const toast = document.getElementById('toast');
+  const ttext = document.getElementById('toastText');
+  ttext.textContent = msg || 'Copied to clipboard';
+  toast.classList.add('show');
+  // ensure visible
+  toast.style.display = 'flex';
+  if(toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{
+    toast.classList.remove('show');
+    // hide after animation
+    setTimeout(()=>{ toast.style.display = 'none'; }, 280);
+  }, 1700);
+}
 
 /* ---------- init ---------- */
 (async function init(){
