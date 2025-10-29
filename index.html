@@ -65,10 +65,78 @@
     .logo h1{margin:0;font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:20px;color:#ff6d57}
     .brand-sub{font-size:12px;color:var(--muted);margin-top:2px}
 
-    nav{display:flex; gap:12px; align-items:center;}
-    nav a{color:#333;text-decoration:none;padding:10px 14px;border-radius:12px;font-weight:600}
-    nav a.active{background:var(--accent);color:white;box-shadow:0 6px 18px rgba(255,123,101,0.18)}
-    nav a:hover{background:var(--hover-purple); color:white; transition: background .18s}
+    /* Desktop Navigation */
+    .desktop-nav{display:flex; gap:12px; align-items:center;}
+    .desktop-nav a{color:#333;text-decoration:none;padding:10px 14px;border-radius:12px;font-weight:600}
+    .desktop-nav a.active{background:var(--accent);color:white;box-shadow:0 6px 18px rgba(255,123,101,0.18)}
+    .desktop-nav a:hover{background:var(--hover-purple); color:white; transition: background .18s}
+
+    /* Mobile Navigation */
+    .mobile-nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--muted);
+      padding: 8px;
+      border-radius: 8px;
+    }
+    .mobile-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+    .mobile-nav.active {
+      transform: translateX(0);
+    }
+    .mobile-nav-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 28px;
+      cursor: pointer;
+      color: var(--muted);
+      padding: 8px;
+      border-radius: 8px;
+    }
+    .mobile-nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: center;
+    }
+    .mobile-nav-links a {
+      color: #333;
+      text-decoration: none;
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 18px;
+      width: 200px;
+      text-align: center;
+    }
+    .mobile-nav-links a.active {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 6px 18px rgba(255,123,101,0.18);
+    }
+    .mobile-nav-links a:hover {
+      background: var(--hover-purple);
+      color: white;
+    }
 
     .btn{
       border:0;padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer;background:transparent;
@@ -100,22 +168,26 @@
       animation: fadeInUp 1s ease forwards;
     }
     .hero h2{
-      margin:0;font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(3rem, 8vw, 6rem);color:#111;
+      margin:0;font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(2.5rem, 8vw, 6rem);color:#111;
       line-height:1.02;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
     .hero .subline{
-      font-size:clamp(1.2rem, 3vw, 1.8rem);
+      font-size:clamp(1rem, 3vw, 1.8rem);
       color:var(--muted);
       margin-top:24px;
       opacity: 0;
       transform: translateY(20px);
       animation: fadeInUp 1s ease 0.3s forwards;
+      line-height: 1.4;
     }
     .hero .actions{
       margin-top:32px;
       display:flex;
       gap:12px;
       justify-content:center;
+      flex-wrap: wrap;
       opacity: 0;
       transform: translateY(20px);
       animation: fadeInUp 1s ease 0.6s forwards;
@@ -125,13 +197,22 @@
       gap:20px;
       justify-content:center;
       margin-top:32px;
+      flex-wrap: wrap;
       opacity: 0;
       transform: translateY(20px);
       animation: fadeInUp 1s ease 0.9s forwards;
     }
-    .stat{background:var(--card);padding:18px 24px;border-radius:12px;box-shadow:var(--shadow);min-width:150px}
+    .stat{
+      background:var(--card);
+      padding:18px 24px;
+      border-radius:12px;
+      box-shadow:var(--shadow);
+      min-width: 120px;
+      flex: 1;
+      max-width: 180px;
+    }
     .stat h3{margin:0;color:var(--accent);font-size:22px}
-    .stat p{margin:6px 0 0;color:var(--muted)}
+    .stat p{margin:6px 0 0;color:var(--muted);font-size:14px}
 
     /* Trending section */
     .trending-section {
@@ -141,7 +222,7 @@
     }
     .trending-section h3 {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 2rem;
+      font-size: clamp(1.5rem, 4vw, 2rem);
       margin-bottom: 12px;
     }
 
@@ -223,10 +304,25 @@
     }
     .card .img{width:100%;height:170px;background:#eee;border-radius:10px;overflow:hidden}
     .card .img img{width:100%;height:100%;object-fit:cover;display:block}
-    .card h4{margin:12px 0 4px;font-family:'Space Grotesk',sans-serif;color:#ff6d57}
-    .card p{color:var(--muted);margin:0 0 12px}
+    .card h4{
+      margin:12px 0 4px;
+      font-family:'Space Grotesk',sans-serif;
+      color:#ff6d57;
+      font-size: clamp(14px, 3vw, 16px);
+      line-height: 1.3;
+    }
+    .card p{color:var(--muted);margin:0 0 12px; font-size: 14px;}
 
-    .card .prompt-box{background:#fff6ef;padding:10px;border-radius:10px;border:1px solid #f2e0d6;color:#4b4b5b}
+    .card .prompt-box{
+      background:#fff6ef;
+      padding:10px;
+      border-radius:10px;
+      border:1px solid #f2e0d6;
+      color:#4b4b5b;
+      font-size: 14px;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
     .card .actions{display:flex;gap:8px;margin-top:10px}
 
     /* form panel */
@@ -246,7 +342,7 @@
       position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(10,10,12,0.4);
       display:none;align-items:center;justify-content:center;z-index:2000;
     }
-    .modal{background:var(--card);padding:20px;border-radius:14px;min-width:320px;box-shadow:var(--shadow)}
+    .modal{background:var(--card);padding:20px;border-radius:14px;min-width:320px;box-shadow:var(--shadow); max-width: 90vw;}
     .modal.show{display:flex}
 
     footer{
@@ -297,6 +393,67 @@
       opacity: 1;
       transform: translateY(0);
     }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .desktop-nav {
+        display: none;
+      }
+      .mobile-nav-toggle {
+        display: block;
+      }
+      .hero .actions {
+        flex-direction: column;
+        align-items: center;
+      }
+      .hero .actions .btn {
+        width: 100%;
+        max-width: 280px;
+        justify-content: center;
+      }
+      .hero .stats {
+        gap: 12px;
+      }
+      .stat {
+        min-width: 100px;
+        padding: 14px 16px;
+      }
+      .stat h3 {
+        font-size: 18px;
+      }
+      .modal-page-header h2 {
+        font-size: 1.5rem;
+      }
+      .modal-page-content {
+        padding: 0 15px 30px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .logo h1 {
+        font-size: 18px;
+      }
+      .logo .mark {
+        width: 36px;
+        height: 36px;
+      }
+      .hero h2 {
+        font-size: clamp(2rem, 10vw, 3rem);
+      }
+      .hero .subline {
+        font-size: 1rem;
+      }
+      .stat {
+        min-width: 80px;
+        padding: 12px 10px;
+      }
+      .stat h3 {
+        font-size: 16px;
+      }
+      .stat p {
+        font-size: 12px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -316,13 +473,28 @@
         </div>
       </div>
 
-      <nav>
+      <!-- Desktop Navigation -->
+      <nav class="desktop-nav">
         <a id="navHome" class="active" href="#" onclick="navTo('home')">Home</a>
         <a id="navGallery" href="#" onclick="openModalPage('gallery')">Gallery</a>
         <a id="navMy" href="#" onclick="openModalPage('my')">My Prompts</a>
         <a id="navLogin" href="#" onclick="openLogin()">Login</a>
       </nav>
+
+      <!-- Mobile Navigation Toggle -->
+      <button class="mobile-nav-toggle" onclick="toggleMobileNav()">☰</button>
     </header>
+  </div>
+
+  <!-- Mobile Navigation Menu -->
+  <div class="mobile-nav" id="mobileNav">
+    <button class="mobile-nav-close" onclick="toggleMobileNav()">×</button>
+    <div class="mobile-nav-links">
+      <a id="mobileNavHome" class="active" href="#" onclick="navToMobile('home')">Home</a>
+      <a id="mobileNavGallery" href="#" onclick="openModalPageMobile('gallery')">Gallery</a>
+      <a id="mobileNavMy" href="#" onclick="openModalPageMobile('my')">My Prompts</a>
+      <a id="mobileNavLogin" href="#" onclick="openLoginMobile()">Login</a>
+    </div>
   </div>
 
   <!-- HERO (home) -->
@@ -454,16 +626,40 @@ const BACKEND_BASE = ''; // empty means same origin
 
 let currentUser = { username:null, role:'user' };
 
+/* ---------- Mobile Navigation ---------- */
+function toggleMobileNav() {
+  const mobileNav = document.getElementById('mobileNav');
+  mobileNav.classList.toggle('active');
+  document.body.style.overflow = mobileNav.classList.contains('active') ? 'hidden' : 'auto';
+}
+
+function navToMobile(page) {
+  navTo(page);
+  toggleMobileNav();
+}
+
+function openModalPageMobile(page) {
+  openModalPage(page);
+  toggleMobileNav();
+}
+
+function openLoginMobile() {
+  openLogin();
+  toggleMobileNav();
+}
+
 /* ---------- Navigation ---------- */
 function navTo(page){
   const pages = ['home','gallery','my'];
   pages.forEach(p=>{
     document.getElementById('page'+capitalize(p)).classList.remove('active');
     document.getElementById('nav'+capitalize(p)).classList.remove('active');
+    document.getElementById('mobileNav'+capitalize(p)).classList.remove('active');
   });
   document.getElementById('page'+capitalize(page)).classList.add('active');
   const navId = (page === 'home') ? 'navHome' : (page === 'gallery' ? 'navGallery' : 'navMy');
   document.getElementById(navId).classList.add('active');
+  document.getElementById('mobileNav'+capitalize(page)).classList.add('active');
 
   // If we switched to gallery, ensure it's loaded
   if(page === 'gallery') loadGallery();
@@ -526,15 +722,23 @@ async function doLogin(){
 /* ---------- Auth UI ---------- */
 function updateAuthUI(){
   const navLogin = document.getElementById('navLogin');
+  const mobileNavLogin = document.getElementById('mobileNavLogin');
+  
   if(currentUser && currentUser.role === 'admin'){
     navLogin.textContent = 'Logout (admin)';
     navLogin.onclick = ()=> { if(confirm('Logout?')) { logout(); } };
+    mobileNavLogin.textContent = 'Logout (admin)';
+    mobileNavLogin.onclick = ()=> { if(confirm('Logout?')) { logout(); } };
   } else if(currentUser && currentUser.username){
     navLogin.textContent = 'Logout ('+currentUser.username+')';
     navLogin.onclick = ()=> { if(confirm('Logout?')) { logout(); } };
+    mobileNavLogin.textContent = 'Logout ('+currentUser.username+')';
+    mobileNavLogin.onclick = ()=> { if(confirm('Logout?')) { logout(); } };
   } else {
     navLogin.textContent = 'Login';
     navLogin.onclick = ()=> openLogin();
+    mobileNavLogin.textContent = 'Login';
+    mobileNavLogin.onclick = ()=> openLoginMobile();
   }
 }
 function logout(){
